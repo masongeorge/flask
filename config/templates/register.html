@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Custom css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nprogress.css') }}">
+
+    <!-- Font awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> {% if title %}
+    <title>{{ title }} | Shop</title>
+    {% else %}
+    <title>Shop</title>
+    {% endif %}
+</head>
+
+<body class="text-center signin">
+    <div id="outer" class="container">
+        {% if form.errors %}
+        <form style="height:560px !important;" method="POST" action="" id="inner" class="form-signin shadow">
+            {{ form.hidden_tag() }} {% else %}
+            <form method="POST" action="" id="inner" class="form-signin shadow">
+                {{ form.hidden_tag() }} {% endif %}
+                <div class="modal-header text-center">
+                    <h5 class="col-12 modal-title text-center" id="label">Create an account</h5>
+                </div>
+                <div style="text-align:-webkit-center;" class="modal-body">
+                    <hr class="divider">
+                    <!-- Username -->
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                {% if form.first_name.errors %} {{ form.first_name(class="form-control text-center is-invalid", placeholder="First name") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.first_name.errors %}
+                                    <span>{{ error }}</span> {% endfor %}
+                                </div>
+                                {% else %} {{ form.first_name(class="form-control text-center", placeholder="First name") }} {% endif %}
+                            </div>
+                            <div class="col-lg-6">
+                                {% if form.last_name.errors %} {{ form.last_name(class="form-control text-center is-invalid", placeholder="Surname") }}
+                                <div class="invalid-feedback">
+                                    {% for error in form.last_name.errors %}
+                                    <span>{{ error }}</span> {% endfor %}
+                                </div>
+                                {% else %} {{ form.last_name(class="form-control text-center", placeholder="Surname") }} {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Username -->
+                    {% if form.email.errors %} {{ form.email(class="form-control w-92 text-center mt-4 is-invalid", placeholder="email@shop.com") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                        <span>{{ error }}</span> {% endfor %}
+                    </div>
+                    {% else %} {{ form.email(class="form-control w-92 text-center mt-4", placeholder="email@shop.com") }} {% endif %}
+                    <!-- Password -->
+                    {% if form.password.errors %} {{ form.password(class="form-control w-92 text-center mt-4 is-invalid", placeholder="Please enter your password") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.password.errors %}
+                        <span>{{ error }}</span> {% endfor %}
+                    </div>
+                    {% else %} {{ form.password(class="form-control w-92 text-center mt-4", placeholder="Please enter your password") }} {% endif %}
+                    <!-- Password -->
+                    {% if form.passwordc.errors %} {{ form.passwordc(class="form-control w-92 text-center mt-4 is-invalid", placeholder="Confirm password") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.passwordc.errors %}
+                        <span>{{ error }}</span> {% endfor %}
+                    </div>
+                    {% else %} {{ form.passwordc(class="form-control w-92 text-center mt-4", placeholder="Confirm password") }} {% endif %}
+                    <p class="mt-3 modal-title">Already a member? <a class="signinc" href="{{url_for('home')}}?openLogin">Sign in</a></p>
+                    <hr class="divider-bottom"> {{ form.submit(class="btn modal-button mt-5", style="color:#fff !important;") }}
+                </div>
+            </form>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/nprogress.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/isotope.pkgd.min.js') }}"></script>
+    <script>
+        $(window).load(function() {
+            NProgress.done();
+        });
+
+        $(document).ready(function() {
+            NProgress.start();
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,92 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Left Sidebar -->
+        <div class="col-lg-3">
+            <!-- Shop Sidebar -->
+            <div class="shop_sidebar">
+                <div class="sidebar_section">
+                    <div class="sidebar_title">Categories</div>
+                    <ul class="sidebar_categories">
+						{% if categories %}
+							{% for category in categories %}
+								<li><a href="{{ url_for('viewcategory', category_id = category.id) }}">{{ category.name }}</a></li>
+							{% endfor %}
+						{% else %}
+							<li><a href="">No categories found</a></li>
+						{% endif %}
+                    </ul>
+                </div>
+                <div class="sidebar_section">
+                    <div class="sidebar_subtitle brands_subtitle">Brands</div>
+                    <ul class="brands_list">
+						{% if brands %}
+							{% for brand in brands %}
+								<li class="brand"><a href="{{ url_for('viewbrand', brand_id = brand.id) }}">{{ brand.name }}</a></li>
+							{% endfor %}
+						{% else %}
+							<li><a href="">No brands found</a></li>
+						{% endif %}					
+                    </ul>
+                </div>
+            </div>
+            <!-- Shop Sidebar End -->
+        </div>
+        <!-- Left Sidebar End -->
+
+        <!-- Main Shop Area -->
+        <div class="col-lg-9">
+            <!-- Shop Content -->
+            <div class="shop_content">
+                <div class="shop_bar clearfix">
+                    <div class="shop_product_count"><span>{% if products %}{{ products|length }}{% else %}no{% endif %}</span> products found using the specified search query: {{ pattern }}</div>
+                </div>
+
+                <div class="product_grid">
+                    <div class="product_grid_border"></div>
+                    <!-- Product Item -->
+					{% if products %}
+						{% for product in products %}
+							{% if product.is_discounted =='1' %}
+								<div class="product_item discount" style="position: absolute; left: 0px; top: 0px;">
+							{% elif is_item_new(product.created_at) %}
+								<div class="product_item is_new" style="position: absolute; left: 0px; top: 0px;">
+							{% else %}
+								<div class="product_item" style="position: absolute; left: 0px; top: 0px;">
+							{% endif %}
+									<div class="product_border"></div>
+									<a href="/viewitem/{{ product.id }}">
+										<div class="product_image d-flex flex-column align-items-center justify-content-center"><img src="{{ url_for('static', filename='images/') }}{{ get_first_image(product.images) }}" alt=""></div>
+									</a>
+									<div class="product_content">
+										{% if product.is_discounted =='1' %}
+											<div class="product_price">£{{ count_new_price(product.price, product.discount_percentage) }}<span>£{{ product.price }}</span></div>
+										{% else %}
+											<div class="product_price">£{{ product.price }}</div>
+										{% endif %}
+										<div class="product_name">
+											<div>
+												<a href="/viewitem/">{{ product.name }}</a>
+											</div>
+										</div>
+									</div>
+									<div class="product_fav" onclick="updateWishCount()"><i class="fas fa-heart"></i></div>
+									<ul class="product_marks">
+										{% if product.is_discounted =='1' %}
+											<li class="product_mark product_discount">-{{ product.discount_percentage }}%</li>
+										{% elif is_item_new(product.created_at) %}
+											<li class="product_mark product_new">new</li>
+										{% endif %}
+									</ul>
+								</div>							
+						{% endfor %}
+					{% else %}{% endif %}
+					</div>
+                </div>
+            <!-- Main Shop Area End -->
+        </div>
+    </div>
+ </div>
+{% endblock %}

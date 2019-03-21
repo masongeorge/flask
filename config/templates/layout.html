@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Custom css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/nprogress.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/viewitem.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/viewcart.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/toastr.min.css') }}">
+
+    <!-- Font awesome-->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous"> {% if title %}
+    <title>{{ title }} | Shop</title>
+    {% else %}
+    <title>Shop</title>
+    {% endif %}
+</head>
+
+<body>
+    <!-- Main nav -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <!--<a class="navbar-brand" href="#">Navbar</a>-->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
+                        <!--<a class="nav-link" href="#">Link</a>!-->
+                    </li>
+                </ul>
+                <ul class="navbar-nav ml-auto">
+                  {% if current_user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                      <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span style="font-weight:300;font-size:16px;">{{ current_user.email }}</span> <i class="fas fa-angle-down"></i>
+                      </a>
+                        <div style="left: 84px;" class="dropdown-menu">
+                            <a class="dropdown-item sm-item" href="{{ url_for('viewcart') }}">View Cart</a>
+                            <a class="dropdown-item sm-item" href="{{ url_for('wishlist') }}">View Wishlist</a>
+                            <a class="dropdown-item sm-item" href="{{ url_for('logout') }}">Logout</a>
+                        </div>
+                    </li>
+                  {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{url_for('register')}}">
+                            <div class="user_icon"><img src="{{ url_for('static', filename='images/user.svg') }}" alt=""></div>Register</a>
+                    </li>
+                    <li class="divider-vertical-second-menu"></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="" data-toggle="modal" data-target="#login">Sign in</a>
+                    </li>
+                  {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Nav End -->
+
+    <header class="header">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1 mt-center">
+                    <a style="text-decoration:none;" href="{{url_for('home')}}"><h1 class="color-b">Shop</h1></a>
+                </div>
+                <!-- Ignore -->
+                <div class="col-md-1"></div>
+                <!-- Ignore -->
+                <div class="col-md-5 mt-center">
+                    <div class="input-group">
+						<form name="search" method="post" action="" style="display: inline-flex; width:100%;">
+							{{ search_form.hidden_tag() }}
+							{{ search_form.search_pattern(class="form-control nheight", style="border-right: none; border-radius: 0px;", placeholder="Search for products...") }}
+							<div class="input-group-append brd-a">
+								<a class="nav-link navbar-mid dropdown-toggle extra" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									<span style="font-weight:300;font-size:16px;" onclick="search.submit()">Search</span>
+								</a>
+							</div>
+						</form>
+                    </div>
+                </div>
+                <!-- Ignore -->
+                <div class="col-md-1"></div>
+                <!-- Ignore -->
+                <!-- WishList -->
+                <div class="col-md-2 mt-center">
+                    <div class="wishlist d-flex flex-row align-items-center justify-content-end">
+                        <div class="wishlist_icon"><img src="{{ url_for('static', filename='images/heart.png') }}" alt=""></div>
+                        <div class="wishlist_content">
+                            <div class="wishlist_text"><a href="{{ url_for('wishlist') }}">Wishlist</a></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- WishList End -->
+                <!-- Cart -->
+                <div class="col-md-2 mt-center">
+                    <div class="cart_container d-flex flex-row align-items-center justify-content-end pull-left d-left">
+                        {% if current_user.is_authenticated %}
+                        <div class="cart_icon">
+                            <img src="{{ url_for('static', filename='images/cart.png') }}" alt="">
+                            <div class="cart_count"><span id="cart_count">{{ getnum() }}</span></div>
+                        </div>
+                        <div class="cart_content">
+                            <div class="cart_text"><a href="{{ url_for('viewcart') }}">Cart</a></div>
+                            <div id="cart_price" class="cart_price">£{{ getprice() }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <!-- Cart End -->
+            </div>
+        </div>
+    </header>
+
+    <!-- Main middle navbar -->
+    <nav class="navbar navbar-expand-lg navbar-border-top">
+        <div class="container">
+            <!--<a class="navbar-brand" href="#">Navbar</a>-->
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link navbar-mid" href="{{url_for('home')}}">Home</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <!-- Main middle navbar End -->
+
+    <body>
+        {% if title != "Item Overview" %}
+			{% block banner %}
+			{% endblock %}
+        {% endif %}
+
+        <div class="main-content">
+            {% block content %} {% endblock %}
+        </div>
+
+        <footer class="footer">
+            <div class="container text-center">
+                <p class="footer-text">Web Applications project.</p>
+                <small class="footer-text">Third-party libraries used: bootstrap, isotope, nprogress.</small>
+            </div>
+        </footer>
+
+        {% if not current_user.is_authenticated %}
+        <!-- Login Modal -->
+        <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header text-center">
+                        <h5 class="col-12 modal-title text-center" id="label">Sign in</h5>
+                    </div>
+                    <form method="post" action="">
+                        <div style="text-align:-webkit-center;" class="modal-body">
+                            <hr class="divider"> {{ form.hidden_tag() }}
+                            <!-- Username -->
+                            <label for="user">Email:</label>
+                            {% if form.email.errors %} {{ form.email(class="form-control modal-form text-center is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                <span>{{ error }}</span> {% endfor %}
+                            </div>
+                            {% else %} {{ form.email(class="form-control modal-form text-center") }} {% endif %}
+
+                            <!-- Password -->
+                            <label class="mt-4" for="firstName">Password:</label>
+                            {% if form.password.errors %} {{ form.password(class="form-control modal-form text-center is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.password.errors %}
+                                <span>{{ error }}</span> {% endfor %}
+                            </div>
+                            {% else %} {{ form.password(class="form-control modal-form text-center") }} {% endif %}
+                            <hr class="divider-bottom">
+                        </div>
+                        <div class="modal-footer">
+                            {{ form.submit(class="btn modal-button", style="color:#fff !important;") }}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Optional JavaScript -->
+        <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+        <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/toastr.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/nprogress.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/isotope.pkgd.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if messages %} {% for category, message in messages %}
+        <script>
+            $(document).ready(function() {
+                toastr.{{ category }}('{{ message }}', '', { closeButton: true, timeOut: 3000,
+                  progressBar: false, allowHtml: true });
+            });
+        </script>
+        {% endfor %} {% endif %} {% endwith %} {% if title == "Item Overview" %}
+        <script>
+            updateTotal();
+        </script>
+        {% endif %}
+    </body>
+
+</html>

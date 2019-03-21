@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="container">
+	{% if not product %}
+		<div class="alert alert-danger" role="alert">
+			Error occured while loading item.
+		</div>
+	{% else %}
+		<div class="row">
+			<div class="col-lg-2 order-lg-1 order-2">
+				<ul class="image_list">
+					{% for image in get_images_array(product.images) %}
+						<li data-image="{{ url_for('static', filename='images/') }}{{ image }}"><img src="{{ url_for('static', filename='images/') }}{{ image }}" alt=""></li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			<div class="col-lg-5 order-lg-2 order-1">
+				<div class="image_selected"><img src="{{ url_for('static', filename='images/') }}{{ get_first_image(product.images) }}" alt=""></div>
+			</div>
+
+			<div class="col-lg-5 order-3">
+				<div class="product_description">
+					<div class="product_category">{{ category.name }}</div>
+					<div class="product_name">{{ product.name }}</div>
+					<div class="product_text">
+						<p>{{ product.description }}</p>
+					</div>
+					<div class="order_info flex-row">
+
+						<label class="col-form-label mr-3" for="price">Price: 
+						{% if product.is_discounted =='1' %}
+							<text style="color:red">£</text>
+							<span style="color:red" id="price">{{ count_new_price(product.price, product.discount_percentage) }}</span>
+							<strike class="ml-2">{{ product.price }}</strike>
+						{% else %}
+							<text>£</text>
+							<span id="price">
+								{{ product.price }}
+							</span>
+						{% endif %}
+						</label>
+
+						<div class="mt-3" style="display:flex;">
+							<label class="col-form-label mr-3" for="quantity">Quantity:</label>
+							<input id="quantity_input" class="form-control" name="quantity" type="number" value="1" onchange="updLink()">
+						</div>
+
+						<div class="row">
+							<div class="col-md-12">
+								<p class="mt-1">Total:
+									<label class="product_price ml-2">£<text id="pricetopay"></text>
+									</label>
+								</p>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-6">
+								{% if current_user.is_authenticated %}<a id="tocart" href="/tocart/{{ product.id }}/1" class="button btn modal-button w-100 mt-x">Add to Cart</a>{% else %}<p class="mt-x">Please <a href="{{ url_for('home') }}?openLogin">sign in</a> to add this item to your cart</p>{% endif %}
+							</div>
+							<div class="col-md-6">
+								<a href="{{ url_for('towish', product_id=product.id) }}" class="button btn wish-button w-100 mt-x">Add to Wishlist<i class="far fa-heart ml-2"></i></a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

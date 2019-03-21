@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+	<div class="cart_section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 offset-lg-1">
+					{% if total == 0 %}
+					<div class="alert alert-info" role="alert">
+						Your wishlist is empty. <a href="{{ url_for('home') }}">Add</a> some items now!
+					</div>	
+					{% else %}
+					<div class="cart_container">
+						<div class="cart_title">Wishlist</div>
+						<div class="cart_items">	
+							<ul class="cart_list">					
+									{% for key, value in wishlist_arr.items() %}
+									<li class="cart_item clearfix">
+										<div class="cart_item_image"><img src="{{ url_for('static', filename='images/') }}{{ value['image'] }}" alt=""></div>
+										<div class="cart_item_info d-flex flex-md-row flex-column justify-content-between">
+											<div class="cart_item_name">
+												<div class="cart_item_title">Name</div>
+												<div class="cart_item_text">{{ value['title'] }}</div>
+											</div>
+											<div class="cart_item_price">
+												<div class="cart_item_title">Price</div>
+												<div class="cart_item_text">£{{ value['price'] }}</div>
+											</div>
+											<div class="cart_item_price">
+												<div class="cart_item_title">Quantity</div>
+												<div class="cart_item_text">{{ value['total_quantity'] }}</div>
+											</div>
+											<div class="delitem">
+												<form id="del" action="{{ url_for('delitem', product_id=key|int, type_id = 2) }}" method="POST">
+													<span class="close"><i class="fas fa-times" onclick="submitForm()"></i></span>
+												</form>
+											</div>											
+										</div>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+						<script>function submitForm(){document.getElementById("del").submit();return false;}</script>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+{% endblock %}
